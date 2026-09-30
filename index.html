@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UBAN Wallet - Decentrallized Mobile Pay</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- QRCode.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
+    body { font-family: 'Hind Siliguri', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 flex justify-center min-h-screen">
+
+  <!-- Mobile Frame Container -->
+  <div class="w-full max-w-md bg-slate-950 min-h-screen shadow-2xl flex flex-col justify-between border-x border-slate-800">
+    
+    <!-- Top Header -->
+    <header class="p-4 bg-gradient-to-r from-emerald-600 to-teal-700 rounded-b-3xl shadow-lg">
+      <div class="flex items-center justify-between pb-3 border-b border-emerald-500/40">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-full bg-white text-emerald-700 flex items-center justify-center font-bold text-lg shadow">
+            <i class="fa-solid fa-wallet"></i>
+          </div>
+          <div>
+            <h1 class="text-sm font-semibold tracking-wide text-emerald-100">UBAN Network</h1>
+            <p id="walletIdDisplay" class="text-xs text-emerald-200 font-mono tracking-tighter truncate w-36">অ্যাকাউন্ট লোড হচ্ছে...</p>
+          </div>
+        </div>
+        <span class="bg-emerald-900/60 border border-emerald-400/40 text-emerald-300 text-xs px-2.5 py-1 rounded-full font-semibold">
+          Supply: 999,999
+        </span>
+      </div>
+
+      <!-- Balance Card (Tap to View) -->
+      <div class="mt-4 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 text-center cursor-pointer select-none transition-all active:scale-95" onclick="toggleBalance()">
+        <p class="text-xs text-emerald-100 uppercase tracking-wider mb-1">মোট ব্যালেন্স (ট্যাপ করুন)</p>
+        <div class="h-8 flex items-center justify-center">
+          <span id="hiddenBalance" class="text-2xl font-bold tracking-widest text-white">••••••••</span>
+          <div id="visibleBalance" class="hidden">
+            <span id="coinAmount" class="text-2xl font-extrabold text-white">0.00</span>
+            <span class="text-sm font-semibold text-emerald-300">UBAN</span>
+          </div>
+        </div>
+        <p id="usdtRate" class="text-xs text-emerald-200 mt-1 font-mono">≈ $0.00 USDT (১ UBAN = $০.৫০ USDT)</p>
+      </div>
+    </header>
+
+    <!-- Main Features Grid -->
+    <main class="p-4 flex-1">
+      <div class="grid grid-cols-4 gap-3 text-center my-4">
+        <!-- Send -->
+        <button onclick="openModal('sendModal')" class="flex flex-col items-center p-3 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-2xl shadow-sm transition">
+          <div class="w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-lg mb-1">
+            <i class="fa-solid fa-paper-plane"></i>
+          </div>
+          <span class="text-xs font-medium">সেন্ড মানি</span>
+        </button>
+
+        <!-- Receive / QR -->
+        <button onclick="openReceiveModal()" class="flex flex-col items-center p-3 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-2xl shadow-sm transition">
+          <div class="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg mb-1">
+            <i class="fa-solid fa-qrcode"></i>
+          </div>
+          <span class="text-xs font-medium">রিসিভ QR</span>
+        </button>
+
+        <!-- Merchant Pay -->
+        <button onclick="alert('ই-কমার্স চেকআউটে কিউআর কোড স্ক্যান করে পেমেন্ট করার ফিচারটি শীঘ্রই আসছে!')" class="flex flex-col items-center p-3 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-2xl shadow-sm transition">
+          <div class="w-12 h-12 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-lg mb-1">
+            <i class="fa-solid fa-cart-shopping"></i>
+          </div>
+          <span class="text-xs font-medium">পেমেন্ট</span>
+        </button>
+
+        <!-- Faucet / Gift -->
+        <button onclick="claimBonus()" class="flex flex-col items-center p-3 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-2xl shadow-sm transition">
+          <div class="w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center text-lg mb-1">
+            <i class="fa-solid fa-gift"></i>
+          </div>
+          <span class="text-xs font-medium">গিফট কয়েন</span>
+        </button>
+      </div>
+
+      <!-- Promo Banner -->
+      <div class="bg-gradient-to-r from-emerald-950 to-slate-900 border border-emerald-800/40 p-3 rounded-2xl mb-5 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold text-emerald-400 uppercase">জিরো ট্রানজ্যাকশন ফি</p>
+          <p class="text-[11px] text-slate-300">কোনো মধ্যস্থতাকারী বা ব্যাংক ছাড়াই সরাসরি UBAN লেনদেন করুন।</p>
+        </div>
+        <i class="fa-solid fa-bolt text-amber-400 text-xl ml-2"></i>
+      </div>
+
+      <!-- Transaction History Section -->
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-semibold text-slate-300">সাম্প্রতিক লেনদেন</h2>
+          <span class="text-[11px] text-emerald-400 cursor-pointer" onclick="clearHistory()">হিস্ট্রি মুছুন</span>
+        </div>
+        <div id="txList" class="space-y-2 text-xs">
+          <!-- Dynamic JS Injection -->
+        </div>
+      </div>
+    </main>
+
+    <!-- Bottom Nav -->
+    <nav class="p-3 bg-slate-900 border-t border-slate-800 flex justify-around text-slate-400 text-xs">
+      <button class="flex flex-col items-center text-emerald-400"><i class="fa-solid fa-house mb-1 text-base"></i>হোম</button>
+      <button onclick="openReceiveModal()" class="flex flex-col items-center hover:text-white"><i class="fa-solid fa-wallet mb-1 text-base"></i>ওয়ালেট</button>
+      <button onclick="copyWalletAddress()" class="flex flex-col items-center hover:text-white"><i class="fa-regular fa-copy mb-1 text-base"></i>কপি অ্যাড্রেস</button>
+    </nav>
+  </div>
+
+  <!-- Send Money Modal -->
+  <div id="sendModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-5 shadow-2xl">
+      <h3 class="text-base font-bold text-white mb-3 flex items-center justify-between">
+        <span>UBAN সেন্ড মানি</span>
+        <button onclick="closeModal('sendModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </h3>
+      <div class="space-y-3">
+        <div>
+          <label class="text-xs text-slate-400 block mb-1">প্রাপকের অ্যাকাউন্ট / ওয়ালেট অ্যাড্রেস</label>
+          <input id="recipientInput" type="text" placeholder="উদাঃ UBAN-8974..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="text-xs text-slate-400 block mb-1">পরিমাণ (UBAN)</label>
+          <input id="amountInput" type="number" step="any" placeholder="0.00" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <button onclick="handleSendMoney()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-lg mt-2">
+          নিশ্চিত করুন
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Receive QR Modal -->
+  <div id="receiveModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-5 shadow-2xl text-center">
+      <h3 class="text-base font-bold text-white mb-2 flex items-center justify-between">
+        <span>আপনার রিসিভিং QR কোড</span>
+        <button onclick="closeModal('receiveModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </h3>
+      <p class="text-xs text-slate-400 mb-4">এই কোডটি স্ক্যান করে যে কেউ আপনাকে UBAN পাঠাতে পারবে।</p>
+      <div class="flex justify-center p-3 bg-white rounded-2xl w-fit mx-auto mb-3" id="qrcode"></div>
+      <p id="walletIdModal" class="text-xs font-mono text-emerald-400 bg-slate-950 p-2 rounded-xl break-all border border-slate-800 select-all"></p>
+      <button onclick="copyWalletAddress()" class="w-full mt-3 bg-slate-800 hover:bg-slate-700 text-white py-2 rounded-xl text-xs transition">
+        অ্যাড্রেস কপি করুন
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Config: 1 UBAN = 0.50 USDT (আপাতত ফিক্সড প্রাইস রুল)
+    const USDT_RATE = 0.50;
+
+    // Load or Init State
+    let userState = JSON.parse(localStorage.getItem('UBAN_WALLET')) || null;
+
+    if (!userState) {
+      // First-time User Initialization with Sign-up Bonus
+      const randomAddr = 'UBAN-' + Math.random().toString(36).substring(2, 8).toUpperCase() + Math.random().toString(36).substring(2, 6).toUpperCase();
+      userState = {
+        address: randomAddr,
+        balance: 10.00, // প্রথম সাইন-আপ গিফট ১০টি UBAN
+        claimedBonus: true,
+        history: [
+          { type: 'received', title: 'সাইন-আপ ওয়েলকাম বোনাস', amount: 10.00, date: new Date().toLocaleDateString('bn-BD') }
+        ]
+      };
+      saveState();
+      alert("🎉 UBAN ওয়ালেটে স্বাগতম! আপনার অ্যাকাউন্টে ১০টি UBAN গিফট কয়েন যুক্ত হয়েছে।");
+    }
+
+    function saveState() {
+      localStorage.setItem('UBAN_WALLET', JSON.stringify(userState));
+    }
+
+    function updateUI() {
+      document.getElementById('walletIdDisplay').innerText = userState.address;
+      document.getElementById('walletIdModal').innerText = userState.address;
+      document.getElementById('coinAmount').innerText = userState.balance.toFixed(2);
+      const usdtVal = (userState.balance * USDT_RATE).toFixed(2);
+      document.getElementById('usdtRate').innerText = `≈ $${usdtVal} USDT (১ UBAN = $${USDT_RATE} USDT)`;
+
+      // Render Transaction History
+      const listEl = document.getElementById('txList');
+      listEl.innerHTML = '';
+      if (userState.history.length === 0) {
+        listEl.innerHTML = '<p class="text-slate-500 text-center py-4">এখনও কোনো লেনদেন হয়নি</p>';
+        return;
+      }
+      userState.history.forEach(tx => {
+        const isReceived = tx.type === 'received';
+        const item = `
+          <div class="flex items-center justify-between p-3 bg-slate-900/80 border border-slate-800/80 rounded-xl">
+            <div class="flex items-center space-x-2.5">
+              <div class="w-8 h-8 rounded-full ${isReceived ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'} flex items-center justify-center text-xs">
+                <i class="fa-solid ${isReceived ? 'fa-arrow-down' : 'fa-arrow-up'}"></i>
+              </div>
+              <div>
+                <p class="font-medium text-slate-200">${tx.title}</p>
+                <p class="text-[10px] text-slate-500">${tx.date}</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="font-bold ${isReceived ? 'text-emerald-400' : 'text-rose-400'} font-mono">${isReceived ? '+' : '-'}${tx.amount} UBAN</span>
+            </div>
+          </div>
+        `;
+        listEl.innerHTML += item;
+      });
+    }
+
+    let isBalanceShown = false;
+    function toggleBalance() {
+      const hiddenEl = document.getElementById('hiddenBalance');
+      const visibleEl = document.getElementById('visibleBalance');
+      isBalanceShown = !isBalanceShown;
+      if (isBalanceShown) {
+        hiddenEl.classList.add('hidden');
+        visibleEl.classList.remove('hidden');
+      } else {
+        hiddenEl.classList.remove('hidden');
+        visibleEl.classList.add('hidden');
+      }
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+      document.getElementById(id).classList.add('flex');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+      document.getElementById(id).classList.remove('flex');
+    }
+
+    function openReceiveModal() {
+      openModal('receiveModal');
+      const qrContainer = document.getElementById('qrcode');
+      qrContainer.innerHTML = '';
+      new QRCode(qrContainer, {
+        text: userState.address,
+        width: 130,
+        height: 130
+      });
+    }
+
+    function copyWalletAddress() {
+      navigator.clipboard.writeText(userState.address);
+      alert("অ্যাড্রেস কপি হয়েছে: " + userState.address);
+    }
+
+    function handleSendMoney() {
+      const recipient = document.getElementById('recipientInput').value.trim();
+      const amount = parseFloat(document.getElementById('amountInput').value);
+
+      if (!recipient) {
+        alert("প্রাপকের ওয়ালেট অ্যাড্রেস দিন।");
+        return;
+      }
+      if (isNaN(amount) || amount <= 0) {
+        alert("সঠিক পরিমাণ উল্লেখ করুন।");
+        return;
+      }
+      if (amount > userState.balance) {
+        alert("পর্যাপ্ত UBAN ব্যালেন্স নেই!");
+        return;
+      }
+
+      // Deduct balance and record transaction
+      userState.balance -= amount;
+      userState.history.unshift({
+        type: 'sent',
+        title: 'প্রাপক: ' + recipient.substring(0, 10) + '...',
+        amount: amount,
+        date: new Date().toLocaleDateString('bn-BD')
+      });
+      saveState();
+      updateUI();
+      closeModal('sendModal');
+      document.getElementById('recipientInput').value = '';
+      document.getElementById('amountInput').value = '';
+      alert("লেনদেন সফল হয়েছে!");
+    }
+
+    function claimBonus() {
+      alert("প্রতি অ্যাকাউন্টে একবারই স্বয়ংক্রিয়ভাবে ওয়েলকাম গিফট দেওয়া হয়। নতুন গিফট ক্যাম্পেইন শীঘ্রই শুরু হবে!");
+    }
+
+    function clearHistory() {
+      if (confirm("আপনি কি লেনদেনের হিস্ট্রি মুছতে চান?")) {
+        userState.history = [];
+        saveState();
+        updateUI();
+      }
+    }
+
+    // Initial Render
+    updateUI();
+  </script>
+</body>
+  </html>
