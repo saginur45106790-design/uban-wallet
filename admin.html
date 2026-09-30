@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UBAN Network - Master Admin Portal</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b1120; }
+  </style>
+</head>
+<body class="min-h-screen text-slate-100 flex flex-col justify-between">
+
+  <!-- ================= AUTH LOCK SCREEN ================= -->
+  <div id="loginScreen" class="fixed inset-0 bg-[#0b1120] z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-7 shadow-2xl text-center">
+      <div class="w-14 h-14 rounded-2xl bg-[#e2136e]/10 text-[#e2136e] flex items-center justify-center text-2xl mx-auto mb-3">
+        <i class="fa-solid fa-user-shield"></i>
+      </div>
+      <h2 class="text-lg font-bold text-white mb-1">UBAN Master Access</h2>
+      <p class="text-xs text-slate-400 mb-5">Confidential administrative portal</p>
+      
+      <div class="space-y-3">
+        <input id="adminPassword" type="password" placeholder="Enter Secret Password" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-center text-sm font-mono tracking-widest text-white focus:outline-none focus:border-[#e2136e]">
+        <button onclick="handleAdminLogin()" class="w-full bg-[#e2136e] hover:bg-[#c20c5b] text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-lg shadow-pink-500/20">
+          Authorize Login
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MAIN ADMIN DASHBOARD ================= -->
+  <div id="adminDashboard" class="hidden flex-1 flex-col max-w-3xl w-full mx-auto p-4 sm:p-6">
+    
+    <!-- Top Bar -->
+    <div class="flex items-center justify-between pb-5 border-b border-slate-800">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#e2136e] to-pink-700 text-white flex items-center justify-center font-bold text-base shadow-lg shadow-pink-500/20">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div>
+          <h1 class="text-base font-bold text-white flex items-center gap-1.5">
+            UBAN Master Admin
+            <span class="text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold">SECURE LIVE</span>
+          </h1>
+          <p class="text-xs text-slate-400">Decentralized Management Terminal</p>
+        </div>
+      </div>
+      <button onclick="logoutAdmin()" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-400 hover:text-rose-400 text-xs px-3 py-1.5 rounded-xl font-bold transition">
+        <i class="fa-solid fa-arrow-right-from-bracket mr-1"></i>Logout
+      </button>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex space-x-2 my-5 bg-slate-900/80 p-1.5 rounded-2xl border border-slate-800 text-xs font-bold">
+      <button id="tabBtnUsers" onclick="switchTab('users')" class="flex-1 py-2.5 rounded-xl bg-[#e2136e] text-white shadow transition">
+        <i class="fa-solid fa-users mr-1.5"></i>Users (<span id="userCountBadge">0</span>)
+      </button>
+      <button id="tabBtnReviews" onclick="switchTab('reviews')" class="flex-1 py-2.5 rounded-xl text-slate-400 hover:text-white transition relative">
+        <i class="fa-solid fa-clock mr-1.5"></i>Deposit Reviews
+        <span id="pendingBadge" class="hidden ml-1 px-1.5 py-0.2 bg-rose-500 text-white rounded-full text-[9px]">0</span>
+      </button>
+      <button id="tabBtnSettings" onclick="switchTab('settings')" class="flex-1 py-2.5 rounded-xl text-slate-400 hover:text-white transition">
+        <i class="fa-solid fa-gear mr-1.5"></i>USDT Address Settings
+      </button>
+    </div>
+
+    <!-- Content Sections -->
+    <div class="flex-1">
+      
+      <!-- TAB 1: USERS LIST -->
+      <div id="tabUsers" class="space-y-3">
+        <div class="flex justify-between items-center px-1">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">All Registered Wallets</span>
+          <button onclick="loadUsers()" class="text-xs text-[#e2136e] font-bold"><i class="fa-solid fa-rotate mr-1"></i>Refresh</button>
+        </div>
+        <div id="usersContainer" class="space-y-2.5">
+          <p class="text-slate-500 text-center py-10 text-xs">Loading registered users...</p>
+        </div>
+      </div>
+
+      <!-- TAB 2: DEPOSIT REVIEWS -->
+      <div id="tabReviews" class="hidden space-y-3">
+        <div class="flex justify-between items-center px-1">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Pending Deposits Requiring Verification</span>
+          <button onclick="loadDeposits()" class="text-xs text-[#e2136e] font-bold"><i class="fa-solid fa-rotate mr-1"></i>Refresh</button>
+        </div>
+        <div id="depositsContainer" class="space-y-3">
+          <p class="text-slate-500 text-center py-10 text-xs">Loading deposits...</p>
+        </div>
+      </div>
+
+      <!-- TAB 3: USDT ADDRESS SETTINGS -->
+      <div id="tabSettings" class="hidden">
+        <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-4">
+          <div>
+            <h3 class="text-sm font-bold text-white mb-1">Official USDT Receiving Address</h3>
+            <p class="text-xs text-slate-400">Changing this will immediately update the deposit address for all users worldwide.</p>
+          </div>
+          <div>
+            <label class="text-xs text-slate-400 font-semibold block mb-1">USDT Wallet Address (TRC-20 / BEP-20)</label>
+            <input id="settingUsdtInput" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-mono text-white focus:outline-none focus:border-[#e2136e]">
+          </div>
+          <button onclick="saveUsdtAddress()" class="w-full bg-[#e2136e] hover:bg-[#c20c5b] text-white font-bold py-3 rounded-xl text-xs transition uppercase tracking-wider">
+            Save & Publish Live
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    const FIREBASE_DB = "https://uban-pay-default-rtdb.firebaseio.com";
+    const SECRET_PIN = "123098"; // আপনার নির্ধারিত গোপন এডমিন পাসওয়ার্ড
+
+    function handleAdminLogin() {
+      const pass = document.getElementById('adminPassword').value.trim();
+      if (pass === SECRET_PIN) {
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('adminDashboard').classList.remove('hidden');
+        document.getElementById('adminDashboard').classList.add('flex');
+        loadUsers();
+        loadDeposits();
+        fetchSettingAddress();
+      } else {
+        alert("Access Denied: Incorrect Password!");
+      }
+    }
+
+    function logoutAdmin() {
+      document.getElementById('adminPassword').value = '';
+      document.getElementById('adminDashboard').classList.add('hidden');
+      document.getElementById('adminDashboard').classList.remove('flex');
+      document.getElementById('loginScreen').classList.remove('hidden');
+    }
+
+    function switchTab(tab) {
+      document.getElementById('tabUsers').classList.add('hidden');
+      document.getElementById('tabReviews').classList.add('hidden');
+      document.getElementById('tabSettings').classList.add('hidden');
+
+      document.getElementById('tabBtnUsers').className = "flex-1 py-2.5 rounded-xl text-slate-400 hover:text-white transition";
+      document.getElementById('tabBtnReviews').className = "flex-1 py-2.5 rounded-xl text-slate-400 hover:text-white transition relative";
+      document.getElementById('tabBtnSettings').className = "flex-1 py-2.5 rounded-xl text-slate-400 hover:text-white transition";
+
+      if (tab === 'users') {
+        document.getElementById('tabUsers').classList.remove('hidden');
+        document.getElementById('tabBtnUsers').className = "flex-1 py-2.5 rounded-xl bg-[#e2136e] text-white shadow transition";
+        loadUsers();
+      } else if (tab === 'reviews') {
+        document.getElementById('tabReviews').classList.remove('hidden');
+        document.getElementById('tabBtnReviews').className = "flex-1 py-2.5 rounded-xl bg-[#e2136e] text-white shadow transition relative";
+        loadDeposits();
+      } else if (tab === 'settings') {
+        document.getElementById('tabSettings').classList.remove('hidden');
+        document.getElementById('tabBtnSettings').className = "flex-1 py-2.5 rounded-xl bg-[#e2136e] text-white shadow transition";
+      }
+    }
+
+    async function loadUsers() {
+      const container = document.getElementById('usersContainer');
+      try {
+        const res = await fetch(`${FIREBASE_DB}/wallets.json`, { cache: 'no-store' });
+        const data = await res.json();
+        if (!data) {
+          container.innerHTML = '<p class="text-slate-500 text-center py-10 text-xs">No registered users yet.</p>';
+          return;
+        }
+
+        const entries = Object.entries(data);
+        document.getElementById('userCountBadge').innerText = entries.length;
+        container.innerHTML = '';
+
+        entries.forEach(([addr, user]) => {
+          const item = `
+            <div class="p-4 bg-slate-900 border border-slate-800 rounded-2xl flex flex-col space-y-2">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h4 class="font-bold text-white text-xs flex items-center gap-1.5">
+                    <i class="fa-solid fa-user text-slate-500"></i>
+                    ${user.name || 'Anonymous User'}
+                  </h4>
+                  <p class="text-[11px] text-slate-400 font-mono mt-0.5">📱 Phone: <span class="text-slate-200">${user.phone || 'N/A'}</span></p>
+                </div>
+                <div class="text-right">
+                  <span class="text-sm font-extrabold text-[#e2136e] font-mono">${(user.balance || 0).toFixed(2)} UBAN</span>
+                  <p class="text-[10px] text-slate-400">PIN: <b class="text-amber-400 font-mono">${user.pin || 'N/A'}</b></p>
+                </div>
+              </div>
+              <div class="bg-slate-950 p-2 rounded-xl border border-slate-800/80 text-[10px] font-mono text-slate-400 truncate select-all">
+                Wallet ID: ${addr}
+              </div>
+            </div>
+          `;
+          container.innerHTML += item;
+        });
+      } catch (e) {
+        container.innerHTML = '<p class="text-rose-400 text-center py-6 text-xs">Error loading users.</p>';
+      }
+    }
+
+    async function loadDeposits() {
+      const container = document.getElementById('depositsContainer');
+      try {
+        const res = await fetch(`${FIREBASE_DB}/deposits.json`, { cache: 'no-store' });
+        const data = await res.json();
+        if (!data) {
+          container.innerHTML = '<p class="text-slate-500 text-center py-10 text-xs">No pending deposit reviews.</p>';
+          document.getElementById('pendingBadge').classList.add('hidden');
+          return;
+        }
+
+        const pending = Object.values(data).filter(d => d.status === 'pending');
+        if (pending.length === 0) {
+          container.innerHTML = '<p class="text-slate-500 text-center py-10 text-xs">No pending deposit requests.</p>';
+          document.getElementById('pendingBadge').classList.add('hidden');
+          return;
+        }
+
+        document.getElementById('pendingBadge').innerText = pending.length;
+        document.getElementById('pendingBadge').classList.remove('hidden');
+
+        container.innerHTML = '';
+        pending.forEach(dep => {
+          const item = `
+            <div class="p-4 bg-slate-900 border border-slate-800 rounded-2xl space-y-3">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h4 class="font-bold text-white text-xs">${dep.userName} (<span class="font-mono text-slate-300">${dep.userPhone}</span>)</h4>
+                  <p class="text-[10px] text-slate-400 font-mono">${dep.date}</p>
+                </div>
+                <div class="text-right">
+                  <span class="text-xs font-bold text-teal-400 font-mono">${dep.usdtAmount} USDT</span>
+                  <p class="text-[11px] font-bold text-[#e2136e] font-mono">→ ${dep.ubanAmount} UBAN</p>
+                </div>
+              </div>
+              <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                <p class="text-[10px] font-bold text-slate-400 mb-0.5">Submitted Transaction ID (TxID):</p>
+                <p class="text-[11px] font-mono text-emerald-400 break-all select-all font-semibold">${dep.txId}</p>
+              </div>
+              <div class="grid grid-cols-2 gap-2 pt-1">
+                <button onclick="rejectDeposit('${dep.id}')" class="py-2.5 rounded-xl bg-rose-950/40 hover:bg-rose-900/50 border border-rose-800/40 text-rose-300 font-bold text-xs transition">
+                  <i class="fa-solid fa-xmark mr-1"></i>Reject
+                </button>
+                <button onclick="approveDeposit('${dep.id}', '${dep.userAddress}', ${dep.ubanAmount})" class="py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition shadow-md shadow-emerald-600/20">
+                  <i class="fa-solid fa-check mr-1"></i>Approve & Credit
+                </button>
+              </div>
+            </div>
+          `;
+          container.innerHTML += item;
+        });
+      } catch (e) {
+        container.innerHTML = '<p class="text-rose-400 text-center py-6 text-xs">Error loading deposits.</p>';
+      }
+    }
+
+    async function approveDeposit(depositId, userAddress, ubanAmount) {
+      if (!confirm(`Confirm approval of ${ubanAmount} UBAN for ${userAddress}?`)) return;
+
+      try {
+        await fetch(`${FIREBASE_DB}/deposits/${depositId}/status.json`, {
+          method: 'PUT',
+          body: JSON.stringify('approved')
+        });
+
+        const balRes = await fetch(`${FIREBASE_DB}/wallets/${userAddress}/balance.json`, { cache: 'no-store' });
+        const curBal = await balRes.json();
+        const newBal = (typeof curBal === 'number' ? curBal : 0) + ubanAmount;
+
+        await fetch(`${FIREBASE_DB}/wallets/${userAddress}/balance.json`, {
+          method: 'PUT',
+          body: JSON.stringify(newBal)
+        });
+
+        // Update circulating sold metrics
+        const soldRes = await fetch(`${FIREBASE_DB}/metrics/sold.json`, { cache: 'no-store' });
+        const curSold = await soldRes.json();
+        await fetch(`${FIREBASE_DB}/metrics/sold.json`, {
+          method: 'PUT',
+          body: JSON.stringify((typeof curSold === 'number' ? curSold : 12450) + ubanAmount)
+        });
+
+        alert("Deposit Approved! User credited successfully.");
+        loadDeposits();
+      } catch (err) {
+        alert("Error approving deposit.");
+      }
+    }
+
+    async function rejectDeposit(depositId) {
+      if (!confirm("Are you sure you want to reject this deposit request?")) return;
+
+      try {
+        await fetch(`${FIREBASE_DB}/deposits/${depositId}/status.json`, {
+          method: 'PUT',
+          body: JSON.stringify('rejected')
+        });
+        alert("Deposit request has been rejected.");
+        loadDeposits();
+      } catch (err) {
+        alert("Error rejecting deposit.");
+      }
+    }
+
+    async function fetchSettingAddress() {
+      try {
+        const res = await fetch(`${FIREBASE_DB}/settings/usdt_address.json`, { cache: 'no-store' });
+        const addr = await res.json();
+        if (addr && typeof addr === 'string') {
+          document.getElementById('settingUsdtInput').value = addr;
+        }
+      } catch(e) {}
+    }
+
+    async function saveUsdtAddress() {
+      const addr = document.getElementById('settingUsdtInput').value.trim();
+      if (!addr) {
+        alert("Address cannot be empty.");
+        return;
+      }
+      try {
+        await fetch(`${FIREBASE_DB}/settings/usdt_address.json`, {
+          method: 'PUT',
+          body: JSON.stringify(addr)
+        });
+        alert("Official USDT Deposit Address updated live!");
+      } catch(e) {
+        alert("Failed to save address.");
+      }
+    }
+  </script>
+</body>
+</html>
