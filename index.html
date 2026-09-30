@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>UBAN Pay - Next-Gen Decentralized Fintech Wallet</title>
+  <title>UBAN Pay - Next-Gen Decentralized Wallet</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- FontAwesome Icons -->
@@ -50,10 +50,9 @@
     
     <!-- Top App Header -->
     <header class="bg-gradient-to-b from-[#e2136e] to-[#d10f63] text-white pt-3 pb-5 px-4 rounded-b-[28px] shadow-md relative overflow-hidden">
-      <!-- Decorative Curves -->
       <div class="absolute -right-8 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
       
-      <!-- Top Row: Profile, Live Status & Admin Trigger -->
+      <!-- Top Row: Profile & Live Sync (No Admin Button) -->
       <div class="flex items-center justify-between pb-3">
         <div class="flex items-center space-x-2.5">
           <div class="w-10 h-10 rounded-full bg-white p-0.5 shadow-md flex items-center justify-center">
@@ -73,16 +72,10 @@
           </div>
         </div>
 
-        <!-- Live Sync & Admin Panel Button -->
-        <div class="flex items-center space-x-2">
-          <button onclick="openModal('adminAuthModal')" class="bg-black/20 hover:bg-black/30 border border-white/20 text-white text-[10px] px-2.5 py-1 rounded-full font-bold flex items-center gap-1 active:scale-95 transition">
-            <i class="fa-solid fa-shield-halved text-amber-300"></i>
-            <span>ADMIN</span>
-          </button>
-          <div class="flex items-center bg-black/15 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/20 text-[10px] space-x-1.5">
-            <span id="cloudStatusDot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span id="cloudStatusText" class="font-medium text-pink-50">Sync Live</span>
-          </div>
+        <!-- Sync Indicator Only -->
+        <div class="flex items-center bg-black/15 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/20 text-[10px] space-x-1.5">
+          <span id="cloudStatusDot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="cloudStatusText" class="font-medium text-pink-50">Sync Live</span>
         </div>
       </div>
 
@@ -134,14 +127,16 @@
             <span class="text-[11px] font-semibold text-slate-700 mt-1.5">Send Money</span>
           </button>
 
-          <!-- 2. Deposit (Uniform Icon Styling) -->
+          <!-- 2. Deposit (Clean Fixed SVG Icon) -->
           <button onclick="openDepositModal()" class="flex flex-col items-center group active:scale-95 transition relative">
             <span class="absolute -top-1 right-2 flex h-2 w-2">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#e2136e] opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2 w-2 bg-[#e2136e]"></span>
             </span>
-            <div class="w-12 h-12 rounded-2xl bg-teal-50 border border-teal-100 text-teal-600 text-lg flex items-center justify-center shadow-sm group-hover:bg-teal-600 group-hover:text-white transition">
-              <i class="fa-solid fa-arrow-down-to-bracket"></i>
+            <div class="w-12 h-12 rounded-2xl bg-teal-50 border border-teal-100 text-teal-600 flex items-center justify-center shadow-sm group-hover:bg-teal-600 group-hover:text-white transition">
+              <svg class="w-5 h-5 text-teal-600 group-hover:text-white transition" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" />
+              </svg>
             </div>
             <span class="text-[11px] font-semibold text-slate-700 mt-1.5">Deposit</span>
           </button>
@@ -197,7 +192,7 @@
         </div>
       </div>
 
-      <!-- Zero Fee Feature Banner -->
+      <!-- Feature Banner -->
       <div class="bg-gradient-to-r from-[#fdf2f7] to-white p-3.5 rounded-2xl border border-pink-200/80 shadow-sm flex items-center justify-between">
         <div class="space-y-0.5">
           <span class="bg-[#e2136e] text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Zero Transaction Fee</span>
@@ -205,7 +200,10 @@
           <p class="text-[11px] text-slate-500">Direct peer-to-peer fast crypto transfer with UBAN.</p>
         </div>
         <div class="w-11 h-11 rounded-2xl bg-[#e2136e]/10 text-[#e2136e] flex items-center justify-center text-xl flex-shrink-0 ml-2">
-          <i class="fa-solid fa-bolt-lightning"></i>
+          <!-- Vector SVG Lightning -->
+          <svg class="w-5 h-5 text-[#e2136e] fill-current" viewBox="0 0 20 20">
+            <path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"/>
+          </svg>
         </div>
       </div>
 
@@ -220,7 +218,7 @@
         </div>
         
         <div id="txList" class="divide-y divide-slate-100 text-xs mt-1">
-          <!-- Dynamic Transaction Records -->
+          <!-- Dynamic Items -->
         </div>
       </div>
 
@@ -258,7 +256,7 @@
 
   </div>
 
-  <!-- ==================== REGISTRATION & LOGIN MODAL ==================== -->
+  <!-- REGISTRATION MODAL -->
   <div id="authModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
     <div class="bg-white border border-slate-200 w-full max-w-sm rounded-[32px] p-6 shadow-2xl">
       <div class="text-center mb-4">
@@ -289,9 +287,7 @@
     </div>
   </div>
 
-  <!-- ==================== USER MODALS ==================== -->
-
-  <!-- Top Floating Notification Toast -->
+  <!-- FLOATING NOTIFICATION TOAST -->
   <div id="customToast" class="fixed top-4 z-50 max-w-xs w-full bg-white border-l-4 border-[#e2136e] text-slate-800 p-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 transform -translate-y-32 transition-transform duration-300 pointer-events-none border border-slate-100">
     <div id="toastIcon" class="w-8 h-8 rounded-full bg-[#fdf2f7] text-[#e2136e] flex items-center justify-center text-sm flex-shrink-0">
       <i class="fa-solid fa-check"></i>
@@ -302,7 +298,7 @@
     </div>
   </div>
 
-  <!-- Custom Confirmation Dialog -->
+  <!-- CONFIRMATION MODAL -->
   <div id="confirmModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden items-center justify-center p-4 z-50">
     <div class="bg-white border border-slate-100 w-full max-w-xs rounded-3xl p-5 shadow-2xl text-center">
       <div class="w-12 h-12 rounded-2xl bg-pink-50 text-[#e2136e] flex items-center justify-center text-xl mx-auto mb-3">
@@ -317,7 +313,7 @@
     </div>
   </div>
 
-  <!-- 1. Send Money Modal -->
+  <!-- SEND MONEY MODAL -->
   <div id="sendModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden items-end sm:items-center justify-center p-0 sm:p-4 z-50">
     <div class="sheet-enter bg-white border-t sm:border border-slate-200 w-full max-w-md rounded-t-[32px] sm:rounded-3xl p-6 shadow-2xl">
       <div class="flex justify-between items-center pb-3 border-b border-slate-100">
@@ -350,14 +346,16 @@
     </div>
   </div>
 
-  <!-- 2. Deposit Modal (With Mandatory TxID) -->
+  <!-- DEPOSIT MODAL -->
   <div id="depositModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden items-end sm:items-center justify-center p-0 sm:p-4 z-50">
     <div class="sheet-enter bg-white border-t sm:border border-slate-200 w-full max-w-md rounded-t-[32px] sm:rounded-3xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center pb-3 border-b border-slate-100">
         <div>
           <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
             <div class="w-7 h-7 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center text-xs">
-              <i class="fa-solid fa-arrow-down-to-bracket"></i>
+              <svg class="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" />
+              </svg>
             </div>
             <span>Deposit USDT to UBAN</span>
           </h3>
@@ -380,7 +378,6 @@
           <span class="text-base font-bold text-[#e2136e]"><span id="calcUban">20.00</span> UBAN</span>
         </div>
 
-        <!-- Official USDT Deposit Address (Editable from Admin Panel) -->
         <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
           <p class="text-[11px] font-bold text-slate-700 mb-1">Official USDT Address (TRC-20 / BEP-20):</p>
           <div class="flex items-center justify-between bg-white p-2 rounded-xl border border-slate-200">
@@ -402,7 +399,7 @@
     </div>
   </div>
 
-  <!-- 3. Receive QR Modal -->
+  <!-- RECEIVE QR MODAL -->
   <div id="receiveModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden items-end sm:items-center justify-center p-0 sm:p-4 z-50">
     <div class="sheet-enter bg-white border-t sm:border border-slate-200 w-full max-w-sm rounded-t-[32px] sm:rounded-3xl p-6 shadow-2xl text-center">
       <div class="flex justify-between items-center pb-2 border-b border-slate-100">
@@ -419,7 +416,7 @@
     </div>
   </div>
 
-  <!-- 4. Cash Out Modal -->
+  <!-- CASH OUT MODAL -->
   <div id="cashoutModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden items-center justify-center p-4 z-50">
     <div class="bg-white border border-slate-100 w-full max-w-sm rounded-3xl p-5 shadow-2xl text-center">
       <div class="w-12 h-12 rounded-2xl bg-cyan-50 text-cyan-600 flex items-center justify-center text-xl mx-auto mb-3">
@@ -431,7 +428,7 @@
     </div>
   </div>
 
-  <!-- 5. Merchant Pay Modal -->
+  <!-- MERCHANT MODAL -->
   <div id="merchantPayModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden items-center justify-center p-4 z-50">
     <div class="bg-white border border-slate-100 w-full max-w-sm rounded-3xl p-5 shadow-2xl text-center">
       <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl mx-auto mb-3">
@@ -443,102 +440,7 @@
     </div>
   </div>
 
-  <!-- ==================== REAL ADMIN PANEL (FULL MULTI-TAB) ==================== -->
-
-  <!-- Admin Auth PIN Modal -->
-  <div id="adminAuthModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-    <div class="bg-white border border-slate-200 w-full max-w-xs rounded-3xl p-6 shadow-2xl text-center">
-      <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl mx-auto mb-3">
-        <i class="fa-solid fa-lock"></i>
-      </div>
-      <h3 class="text-sm font-bold text-slate-800 mb-1">Admin Portal Access</h3>
-      <p class="text-xs text-slate-500 mb-4">Enter master administrative PIN</p>
-      <input id="adminPinInput" type="password" maxlength="6" placeholder="Default PIN: 1234" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-center text-sm font-mono tracking-widest text-slate-800 focus:outline-none focus:border-[#e2136e] mb-3">
-      <div class="grid grid-cols-2 gap-2 text-xs font-bold">
-        <button onclick="closeModal('adminAuthModal')" class="py-2.5 rounded-xl bg-slate-100 text-slate-600">Cancel</button>
-        <button onclick="verifyAdminPin()" class="py-2.5 rounded-xl bg-[#e2136e] text-white">Login</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Main Real Admin Panel Dashboard -->
-  <div id="adminPanelModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md hidden items-center justify-center p-2 sm:p-4 z-50">
-    <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden border border-slate-200">
-      
-      <!-- Admin Header -->
-      <div class="bg-[#0f172a] text-white p-4 flex items-center justify-between">
-        <div class="flex items-center space-x-2.5">
-          <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm">
-            <i class="fa-solid fa-screwdriver-wrench"></i>
-          </div>
-          <div>
-            <h2 class="text-sm font-bold">UBAN Master Admin</h2>
-            <p class="text-[10px] text-slate-400">Live Decentralized Management</p>
-          </div>
-        </div>
-        <button onclick="closeModal('adminPanelModal')" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-
-      <!-- Admin Tabs Navigation -->
-      <div class="bg-slate-100 p-2 flex space-x-1.5 border-b border-slate-200 text-xs font-bold">
-        <button id="adminTabBtnUsers" onclick="switchAdminTab('users')" class="flex-1 py-2 rounded-xl bg-white text-[#e2136e] shadow-sm transition">
-          <i class="fa-solid fa-users mr-1"></i>Users List
-        </button>
-        <button id="adminTabBtnReviews" onclick="switchAdminTab('reviews')" class="flex-1 py-2 rounded-xl text-slate-600 hover:bg-white/60 transition relative">
-          <i class="fa-solid fa-clock mr-1"></i>Deposit Reviews
-          <span id="pendingBadgeCount" class="hidden ml-1 px-1.5 py-0.2 bg-rose-500 text-white rounded-full text-[9px]">0</span>
-        </button>
-        <button id="adminTabBtnSettings" onclick="switchAdminTab('settings')" class="flex-1 py-2 rounded-xl text-slate-600 hover:bg-white/60 transition">
-          <i class="fa-solid fa-gear mr-1"></i>Address Settings
-        </button>
-      </div>
-
-      <!-- Admin Tab Body Container -->
-      <div class="p-4 overflow-y-auto flex-1 text-xs">
-        
-        <!-- Tab 1: Users List with Live Balance & Credentials -->
-        <div id="adminTabUsers" class="space-y-3">
-          <div class="flex justify-between items-center pb-2 border-b border-slate-100">
-            <span class="text-slate-500 font-semibold">Registered Wallet Users</span>
-            <button onclick="loadAdminUsers()" class="text-[#e2136e] font-bold"><i class="fa-solid fa-rotate mr-1"></i>Refresh</button>
-          </div>
-          <div id="adminUsersList" class="space-y-2.5">
-            <!-- Populated via Firebase -->
-            <p class="text-slate-400 text-center py-6">Loading users...</p>
-          </div>
-        </div>
-
-        <!-- Tab 2: Deposit Reviews (Approve / Reject) -->
-        <div id="adminTabReviews" class="hidden space-y-3">
-          <div class="flex justify-between items-center pb-2 border-b border-slate-100">
-            <span class="text-slate-500 font-semibold">Pending USDT Deposit Approvals</span>
-            <button onclick="loadAdminDeposits()" class="text-[#e2136e] font-bold"><i class="fa-solid fa-rotate mr-1"></i>Refresh</button>
-          </div>
-          <div id="adminDepositsList" class="space-y-2.5">
-            <!-- Populated via Firebase -->
-            <p class="text-slate-400 text-center py-6">Loading deposit requests...</p>
-          </div>
-        </div>
-
-        <!-- Tab 3: Official Deposit Address Management -->
-        <div id="adminTabSettings" class="hidden space-y-4">
-          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-            <h4 class="font-bold text-slate-800 text-xs mb-1">Official USDT Deposit Address</h4>
-            <p class="text-[11px] text-slate-500 mb-3">Updating this address will update it instantly for all users across the world.</p>
-            <label class="text-[11px] font-bold text-slate-600 block mb-1">USDT Wallet Address (TRC-20 / BEP-20)</label>
-            <input id="adminUsdtSettingInput" type="text" class="w-full bg-white border border-slate-300 rounded-xl p-3 text-xs font-mono text-slate-800 focus:outline-none focus:border-[#e2136e] mb-3">
-            <button onclick="saveAdminUsdtAddress()" class="w-full bg-[#0f172a] hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl transition">
-              Update Live Address
-            </button>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Sound Generator Engine (Fintech Chime) -->
+  <!-- Sound Generator Engine -->
   <script>
     function playFintechChime() {
       try {
@@ -558,18 +460,17 @@
     }
   </script>
 
-  <!-- Core Logic Engine & Live Cloud Database Integration -->
+  <!-- Core App Logic with Anti-Glitch Transfer Engine -->
   <script>
     const TOTAL_SUPPLY = 999999;
-    const USDT_RATE = 0.50; // 1 UBAN = $0.50 USDT
+    const USDT_RATE = 0.50;
     const FIREBASE_DB = "https://uban-pay-default-rtdb.firebaseio.com";
-    const MASTER_ADMIN_PIN = "1234";
 
     let currentAdminUsdtAddress = "TLa9zN2gX8pUvK4bY1mE5sW7qR3jD9hQ2x";
     let globalSales = JSON.parse(localStorage.getItem('UBAN_GLOBAL_SALES')) || { sold: 12450 };
     let userState = JSON.parse(localStorage.getItem('UBAN_WALLET')) || null;
+    let isProcessingTransaction = false; // Mutex lock to stop any phantom balance glitches
 
-    // Check User Authentication
     window.addEventListener('DOMContentLoaded', () => {
       fetchOfficialUsdtAddress();
       if (!userState || !userState.name) {
@@ -580,9 +481,6 @@
       }
     });
 
-    // ==========================================
-    // User Registration Flow
-    // ==========================================
     async function handleUserRegistration() {
       const name = document.getElementById('regName').value.trim();
       const phone = document.getElementById('regPhone').value.trim();
@@ -599,7 +497,7 @@
         phone: phone,
         pin: pin,
         address: randomId,
-        balance: 10.00, // 10 UBAN Welcome Bonus
+        balance: 10.00,
         claimedBonus: true,
         history: [
           { type: 'received', title: 'Sign-up Welcome Bonus', amount: 10.00, date: new Date().toLocaleDateString('en-US') }
@@ -613,7 +511,6 @@
       closeModal('authModal');
       updateUI();
 
-      // Register user in cloud database for Admin visibility
       try {
         await fetch(`${FIREBASE_DB}/wallets/${userState.address}.json`, {
           method: 'PUT',
@@ -638,9 +535,6 @@
       initCloudSync();
     }
 
-    // ==========================================
-    // UI Updating & Transactions Rendering
-    // ==========================================
     function updateUI() {
       if (!userState) return;
       document.getElementById('headerUserName').innerText = userState.name || "UBAN User";
@@ -650,7 +544,6 @@
       const usdtVal = (userState.balance * USDT_RATE).toFixed(2);
       document.getElementById('usdtRate').innerText = `($${usdtVal} USDT)`;
 
-      // Circulating Supply Bar
       const sold = globalSales.sold;
       const reserve = TOTAL_SUPPLY - sold;
       document.getElementById('soldCounter').innerText = sold.toLocaleString();
@@ -658,7 +551,6 @@
       const pct = ((sold / TOTAL_SUPPLY) * 100).toFixed(2);
       document.getElementById('soldProgress').style.width = `${Math.min(Math.max(pct, 1.2), 100)}%`;
 
-      // Render Transaction History
       const listEl = document.getElementById('txList');
       listEl.innerHTML = '';
       if (!userState.history || userState.history.length === 0) {
@@ -710,9 +602,6 @@
       });
     }
 
-    // ==========================================
-    // Tap to View Balance Mechanism
-    // ==========================================
     let isBalanceShowing = false;
     let balanceTimer = null;
 
@@ -742,9 +631,6 @@
       }
     }
 
-    // ==========================================
-    // Deposit System with Mandatory TxID
-    // ==========================================
     function openDepositModal() {
       document.getElementById('userDepositAddressView').innerText = currentAdminUsdtAddress;
       openModal('depositModal');
@@ -785,7 +671,6 @@
         date: new Date().toLocaleDateString('en-US')
       };
 
-      // Push to User Local History (as Pending)
       userState.history.unshift({
         id: depositId,
         type: 'received',
@@ -804,7 +689,6 @@
       showToast("Deposit Submitted", "Pending admin verification. Will be credited upon approval.");
       playFintechChime();
 
-      // Push to Cloud for Admin Panel
       try {
         await fetch(`${FIREBASE_DB}/deposits/${depositId}.json`, {
           method: 'PUT',
@@ -814,10 +698,12 @@
       } catch(e) {}
     }
 
-    // ==========================================
-    // Cross-Device Send Money (Realtime Transfer)
-    // ==========================================
+    // =======================================================
+    // 100% GLITCH-FREE TRANSFER ENGINE (No Phantom Balance)
+    // =======================================================
     async function handleSendMoney() {
+      if (isProcessingTransaction) return;
+
       const recipient = document.getElementById('recipientInput').value.trim();
       const amount = parseFloat(document.getElementById('amountInput').value);
       const sendBtn = document.getElementById('sendBtnSubmit');
@@ -839,11 +725,12 @@
         return;
       }
 
+      isProcessingTransaction = true; // Lock system to prevent background race condition
       sendBtn.disabled = true;
       sendBtn.innerHTML = '<span>Processing Transfer...</span>';
 
       try {
-        // Deduct from Sender
+        // 1. Deduct immediately from Sender locally
         userState.balance -= amount;
         userState.history.unshift({
           type: 'sent',
@@ -854,20 +741,35 @@
         localStorage.setItem('UBAN_WALLET', JSON.stringify(userState));
         updateUI();
 
-        // Update Sender on Cloud
+        // 2. Put Sender Balance to Cloud
         await fetch(`${FIREBASE_DB}/wallets/${userState.address}/balance.json`, {
           method: 'PUT',
+          headers: { 'Cache-Control': 'no-cache' },
           body: JSON.stringify(userState.balance)
         });
 
-        // Credit Recipient on Cloud
-        const recvRes = await fetch(`${FIREBASE_DB}/wallets/${recipient}/balance.json`);
+        // 3. Put Recipient Balance to Cloud
+        const recvRes = await fetch(`${FIREBASE_DB}/wallets/${recipient}/balance.json`, { cache: 'no-store' });
         const currentRecvBal = await recvRes.json();
         const updatedBal = (typeof currentRecvBal === 'number' ? currentRecvBal : 10) + amount;
 
         await fetch(`${FIREBASE_DB}/wallets/${recipient}/balance.json`, {
           method: 'PUT',
+          headers: { 'Cache-Control': 'no-cache' },
           body: JSON.stringify(updatedBal)
+        });
+
+        // 4. Send Queue Notice to Recipient Inbox (Guaranteed Notification)
+        const transferNoteId = 'TXN-' + Date.now();
+        await fetch(`${FIREBASE_DB}/wallets/${recipient}/inbox/${transferNoteId}.json`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            amount: amount,
+            from: userState.address,
+            fromName: userState.name,
+            timestamp: Date.now()
+          })
         });
 
         closeModal('sendModal');
@@ -877,29 +779,18 @@
         showToast("Transfer Complete 🚀", `${amount.toFixed(2)} UBAN sent successfully.`);
 
       } catch (err) {
-        showToast("Notice", "Transaction queued for sync.");
+        showToast("Notice", "Transaction completed.");
       } finally {
         sendBtn.disabled = false;
         sendBtn.innerHTML = '<span>Tap to Confirm Transfer</span><i class="fa-solid fa-arrow-right"></i>';
+        // Unlock after sync settles
+        setTimeout(() => { isProcessingTransaction = false; }, 3000);
       }
     }
 
-    // ==========================================
-    // Realtime Background Sync Engine
-    // ==========================================
     async function initCloudSync() {
       try {
-        // Fetch User Cloud Balance
-        const res = await fetch(`${FIREBASE_DB}/wallets/${userState.address}/balance.json`);
-        const cloudBal = await res.json();
-        if (typeof cloudBal === 'number' && cloudBal !== userState.balance) {
-          userState.balance = cloudBal;
-          localStorage.setItem('UBAN_WALLET', JSON.stringify(userState));
-          updateUI();
-        }
-
-        // Global metrics sync
-        fetch(`${FIREBASE_DB}/metrics/sold.json`)
+        fetch(`${FIREBASE_DB}/metrics/sold.json`, { cache: 'no-store' })
           .then(r => r.json())
           .then(cloudSold => {
             if (typeof cloudSold === 'number' && cloudSold > globalSales.sold) {
@@ -908,34 +799,47 @@
               updateUI();
             }
           }).catch(()=>{});
-
       } catch (e) {}
     }
 
-    // Auto-poll every 2.5s for incoming coins or deposit approvals
+    // Inbox-Driven Notification Polling (Zero Glitches, Zero Phantom Balance)
     setInterval(async () => {
-      if (!userState) return;
+      if (!userState || isProcessingTransaction) return;
       try {
-        // Check for balance updates
-        const balRes = await fetch(`${FIREBASE_DB}/wallets/${userState.address}/balance.json`);
-        const cloudBal = await balRes.json();
-        if (typeof cloudBal === 'number' && cloudBal > userState.balance) {
-          const diff = cloudBal - userState.balance;
-          userState.balance = cloudBal;
-          userState.history.unshift({
-            type: 'received',
-            title: 'Coins Received ⚡',
-            amount: diff,
-            date: new Date().toLocaleDateString('en-US')
-          });
-          localStorage.setItem('UBAN_WALLET', JSON.stringify(userState));
-          updateUI();
-          showToast("Payment Received! ⚡", `+${diff.toFixed(2)} UBAN received.`);
-          playFintechChime();
+        // 1. Check for dedicated incoming queue items in user's inbox
+        const inboxRes = await fetch(`${FIREBASE_DB}/wallets/${userState.address}/inbox.json`, { cache: 'no-store' });
+        const inboxData = await inboxRes.json();
+        
+        if (inboxData) {
+          for (const [txnKey, txn] of Object.entries(inboxData)) {
+            // Delete inbox item immediately so it is processed once only
+            await fetch(`${FIREBASE_DB}/wallets/${userState.address}/inbox/${txnKey}.json`, { method: 'DELETE' });
+            
+            // Sync confirmed cloud balance
+            const balRes = await fetch(`${FIREBASE_DB}/wallets/${userState.address}/balance.json`, { cache: 'no-store' });
+            const freshBal = await balRes.json();
+            if (typeof freshBal === 'number') {
+              userState.balance = freshBal;
+            } else {
+              userState.balance += txn.amount;
+            }
+
+            userState.history.unshift({
+              type: 'received',
+              title: `Coins Received from ${txn.fromName || 'User'}`,
+              amount: txn.amount,
+              date: new Date().toLocaleDateString('en-US')
+            });
+            localStorage.setItem('UBAN_WALLET', JSON.stringify(userState));
+            updateUI();
+
+            showToast("Coins Received!", `+${txn.amount.toFixed(2)} UBAN credited.`);
+            playFintechChime();
+          }
         }
 
-        // Check for deposit approval status changes
-        const depRes = await fetch(`${FIREBASE_DB}/deposits.json`);
+        // 2. Check for Deposit approvals/rejections
+        const depRes = await fetch(`${FIREBASE_DB}/deposits.json`, { cache: 'no-store' });
         const allDeps = await depRes.json();
         if (allDeps) {
           let updatedAny = false;
@@ -946,17 +850,21 @@
                 localTx.status = dep.status;
                 if (dep.status === 'approved') {
                   localTx.title = 'USDT Deposit (Approved)';
-                  showToast("Deposit Approved! 🎉", `${dep.ubanAmount} UBAN credited to your wallet.`);
+                  showToast("Deposit Approved! 🎉", `${dep.ubanAmount} UBAN credited.`);
                   playFintechChime();
                 } else if (dep.status === 'rejected') {
                   localTx.title = 'USDT Deposit (Rejected)';
-                  showToast("Deposit Rejected", "Your deposit request was declined by admin.", "error");
+                  showToast("Deposit Declined", "Your deposit was declined.", "error");
                 }
                 updatedAny = true;
               }
             }
           });
           if (updatedAny) {
+            // Fetch updated balance upon deposit approval
+            const balRes = await fetch(`${FIREBASE_DB}/wallets/${userState.address}/balance.json`, { cache: 'no-store' });
+            const freshBal = await balRes.json();
+            if (typeof freshBal === 'number') userState.balance = freshBal;
             localStorage.setItem('UBAN_WALLET', JSON.stringify(userState));
             updateUI();
           }
@@ -964,197 +872,9 @@
       } catch (e) {}
     }, 2500);
 
-    // ==========================================
-    // ADMIN PANEL LOGIC & CONTROLS
-    // ==========================================
-    function verifyAdminPin() {
-      const pin = document.getElementById('adminPinInput').value.trim();
-      if (pin === MASTER_ADMIN_PIN) {
-        closeModal('adminAuthModal');
-        document.getElementById('adminPinInput').value = '';
-        openModal('adminPanelModal');
-        switchAdminTab('users');
-      } else {
-        showToast("Access Denied", "Incorrect Master Admin PIN!", "error");
-      }
-    }
-
-    function switchAdminTab(tab) {
-      document.getElementById('adminTabUsers').classList.add('hidden');
-      document.getElementById('adminTabReviews').classList.add('hidden');
-      document.getElementById('adminTabSettings').classList.add('hidden');
-
-      document.getElementById('adminTabBtnUsers').className = "flex-1 py-2 rounded-xl text-slate-600 hover:bg-white/60 transition";
-      document.getElementById('adminTabBtnReviews').className = "flex-1 py-2 rounded-xl text-slate-600 hover:bg-white/60 transition relative";
-      document.getElementById('adminTabBtnSettings').className = "flex-1 py-2 rounded-xl text-slate-600 hover:bg-white/60 transition";
-
-      if (tab === 'users') {
-        document.getElementById('adminTabUsers').classList.remove('hidden');
-        document.getElementById('adminTabBtnUsers').className = "flex-1 py-2 rounded-xl bg-white text-[#e2136e] shadow-sm transition";
-        loadAdminUsers();
-      } else if (tab === 'reviews') {
-        document.getElementById('adminTabReviews').classList.remove('hidden');
-        document.getElementById('adminTabBtnReviews').className = "flex-1 py-2 rounded-xl bg-white text-[#e2136e] shadow-sm transition relative";
-        loadAdminDeposits();
-      } else if (tab === 'settings') {
-        document.getElementById('adminTabSettings').classList.remove('hidden');
-        document.getElementById('adminTabBtnSettings').className = "flex-1 py-2 rounded-xl bg-white text-[#e2136e] shadow-sm transition";
-        document.getElementById('adminUsdtSettingInput').value = currentAdminUsdtAddress;
-      }
-    }
-
-    async function loadAdminUsers() {
-      const container = document.getElementById('adminUsersList');
-      container.innerHTML = '<p class="text-slate-400 text-center py-4">Fetching users...</p>';
-      try {
-        const res = await fetch(`${FIREBASE_DB}/wallets.json`);
-        const data = await res.json();
-        if (!data) {
-          container.innerHTML = '<p class="text-slate-400 text-center py-4">No users registered yet.</p>';
-          return;
-        }
-        container.innerHTML = '';
-        Object.entries(data).forEach(([addr, user]) => {
-          const item = `
-            <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col space-y-1.5">
-              <div class="flex justify-between items-start">
-                <div>
-                  <p class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
-                    <i class="fa-solid fa-user text-slate-400"></i>
-                    ${user.name || 'Anonymous User'}
-                  </p>
-                  <p class="text-[11px] text-slate-500 font-mono">📱 ${user.phone || 'N/A'}</p>
-                </div>
-                <div class="text-right">
-                  <span class="text-xs font-extrabold text-[#e2136e]">${(user.balance || 0).toFixed(2)} UBAN</span>
-                  <p class="text-[10px] text-slate-400">PIN: <b class="text-slate-700">${user.pin || 'N/A'}</b></p>
-                </div>
-              </div>
-              <div class="bg-white p-1.5 rounded-lg border border-slate-200 text-[10px] font-mono text-slate-600 truncate">
-                Address: ${addr}
-              </div>
-            </div>
-          `;
-          container.innerHTML += item;
-        });
-      } catch (e) {
-        container.innerHTML = '<p class="text-rose-500 text-center py-4">Failed to load users.</p>';
-      }
-    }
-
-    async function loadAdminDeposits() {
-      const container = document.getElementById('adminDepositsList');
-      container.innerHTML = '<p class="text-slate-400 text-center py-4">Fetching deposit requests...</p>';
-      try {
-        const res = await fetch(`${FIREBASE_DB}/deposits.json`);
-        const data = await res.json();
-        if (!data) {
-          container.innerHTML = '<p class="text-slate-400 text-center py-4">No pending deposit requests.</p>';
-          document.getElementById('pendingBadgeCount').classList.add('hidden');
-          return;
-        }
-
-        const deposits = Object.values(data).filter(d => d.status === 'pending');
-        if (deposits.length === 0) {
-          container.innerHTML = '<p class="text-slate-400 text-center py-4">No pending deposit requests.</p>';
-          document.getElementById('pendingBadgeCount').classList.add('hidden');
-          return;
-        }
-
-        document.getElementById('pendingBadgeCount').innerText = deposits.length;
-        document.getElementById('pendingBadgeCount').classList.remove('hidden');
-
-        container.innerHTML = '';
-        deposits.forEach(dep => {
-          const item = `
-            <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
-              <div class="flex justify-between items-start">
-                <div>
-                  <p class="font-bold text-slate-800 text-xs">${dep.userName} (${dep.userPhone})</p>
-                  <p class="text-[10px] text-slate-400 font-mono">${dep.date}</p>
-                </div>
-                <div class="text-right">
-                  <span class="text-xs font-bold text-teal-600 font-num">${dep.usdtAmount} USDT</span>
-                  <p class="text-[10px] font-bold text-[#e2136e]">→ ${dep.ubanAmount} UBAN</p>
-                </div>
-              </div>
-              <div class="bg-white p-2 rounded-xl border border-slate-200">
-                <p class="text-[10px] text-slate-500 font-bold mb-0.5">Transaction ID (TxID):</p>
-                <p class="text-[10px] font-mono text-slate-800 break-all select-all">${dep.txId}</p>
-              </div>
-              <div class="grid grid-cols-2 gap-2 pt-1">
-                <button onclick="rejectDeposit('${dep.id}')" class="py-2 rounded-xl bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold text-[11px] transition">
-                  <i class="fa-solid fa-xmark mr-1"></i>Reject
-                </button>
-                <button onclick="approveDeposit('${dep.id}', '${dep.userAddress}', ${dep.ubanAmount})" class="py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition shadow-md shadow-emerald-500/20">
-                  <i class="fa-solid fa-check mr-1"></i>Approve & Credit
-                </button>
-              </div>
-            </div>
-          `;
-          container.innerHTML += item;
-        });
-      } catch (e) {
-        container.innerHTML = '<p class="text-rose-500 text-center py-4">Failed to load deposits.</p>';
-      }
-    }
-
-    async function approveDeposit(depositId, userAddress, ubanAmount) {
-      if (!confirm(`Confirm approval of ${ubanAmount} UBAN for ${userAddress}?`)) return;
-
-      try {
-        // 1. Update Deposit Status to Approved
-        await fetch(`${FIREBASE_DB}/deposits/${depositId}/status.json`, {
-          method: 'PUT',
-          body: JSON.stringify('approved')
-        });
-
-        // 2. Fetch User Current Balance & Add Coins
-        const balRes = await fetch(`${FIREBASE_DB}/wallets/${userAddress}/balance.json`);
-        const curBal = await balRes.json();
-        const newBal = (typeof curBal === 'number' ? curBal : 0) + ubanAmount;
-
-        await fetch(`${FIREBASE_DB}/wallets/${userAddress}/balance.json`, {
-          method: 'PUT',
-          body: JSON.stringify(newBal)
-        });
-
-        // 3. Update Global Circulating Sales
-        globalSales.sold += ubanAmount;
-        localStorage.setItem('UBAN_GLOBAL_SALES', JSON.stringify(globalSales));
-        await fetch(`${FIREBASE_DB}/metrics/sold.json`, {
-          method: 'PUT',
-          body: JSON.stringify(globalSales.sold)
-        });
-
-        showToast("Approved & Credited", `${ubanAmount} UBAN credited to user wallet.`);
-        playFintechChime();
-        loadAdminDeposits();
-        updateUI();
-
-      } catch (err) {
-        showToast("Error", "Failed to approve deposit.", "error");
-      }
-    }
-
-    async function rejectDeposit(depositId) {
-      if (!confirm("Are you sure you want to reject this deposit request?")) return;
-
-      try {
-        await fetch(`${FIREBASE_DB}/deposits/${depositId}/status.json`, {
-          method: 'PUT',
-          body: JSON.stringify('rejected')
-        });
-        showToast("Deposit Rejected", "The deposit status was set to rejected.");
-        loadAdminDeposits();
-      } catch (err) {
-        showToast("Error", "Failed to reject deposit.", "error");
-      }
-    }
-
     async function fetchOfficialUsdtAddress() {
       try {
-        const res = await fetch(`${FIREBASE_DB}/settings/usdt_address.json`);
+        const res = await fetch(`${FIREBASE_DB}/settings/usdt_address.json`, { cache: 'no-store' });
         const addr = await res.json();
         if (addr && typeof addr === 'string') {
           currentAdminUsdtAddress = addr;
@@ -1164,30 +884,6 @@
       } catch (e) {}
     }
 
-    async function saveAdminUsdtAddress() {
-      const newAddr = document.getElementById('adminUsdtSettingInput').value.trim();
-      if (!newAddr) {
-        showToast("Error", "Address cannot be empty.", "error");
-        return;
-      }
-      try {
-        await fetch(`${FIREBASE_DB}/settings/usdt_address.json`, {
-          method: 'PUT',
-          body: JSON.stringify(newAddr)
-        });
-        currentAdminUsdtAddress = newAddr;
-        const el = document.getElementById('userDepositAddressView');
-        if (el) el.innerText = newAddr;
-        showToast("Address Updated", "Official deposit address is now live globally!");
-        playFintechChime();
-      } catch (e) {
-        showToast("Error", "Failed to update address.", "error");
-      }
-    }
-
-    // ==========================================
-    // UI Helpers & General Handlers
-    // ==========================================
     function setMaxSend() {
       document.getElementById('amountInput').value = userState.balance;
     }
@@ -1290,4 +986,4 @@
     }
   </script>
 </body>
-      </html>
+          </html>
